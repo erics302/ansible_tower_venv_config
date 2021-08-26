@@ -1,0 +1,14 @@
+ipaddress==1.0.23
+Jinja2==2.11.2
+jmespath==0.9.3
+ldap3==2.6
+lxml==4.2.5
+netaddr==0.7.19
+objectpath==0.6.1
+pan-os-python==1.0.2
+pan-python==0.16.0
+pandevice==0.11.1
+python-ldap==3.2.0
+requests==2.20.0
+xmljson==0.1.9
+xmltodict==0.11.0

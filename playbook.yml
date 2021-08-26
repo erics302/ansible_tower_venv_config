@@ -1,0 +1,43 @@
+---
+- hosts: "{{ selected_hosts }}"
+  gather_facts: true
+  vars:
+    venv_list:
+      - 'windows01'
+      - 'network01'
+    tower_venv_directory: '/var/lib/awx/venv/'
+
+  tasks:
+    - name: clean up old copies of requirements files on local disk.
+      file:
+        path: "/tmp/requirements_{{ item }}.txt"
+        state: absent
+      with_items:
+        - "{{ venv_list }}"
+
+    - name: Copy requirements files to tower server from local jenkins
+      copy:
+        src: files/requirements_{{ item }}.txt
+        dest: /tmp
+      with_items:
+        - "{{ venv_list }}"
+
+#    - name: Yum install packages needed in the parent RHEL os
+#      yum:
+#        name: "{{ packages }}"
+#      vars:
+#        packages:
+#          - openldap-devel
+#          # openldap-devel required by ansible-role_palo_userid_import
+#      become: yes
+
+    - name: Setup virtual env specified.
+      pip:
+        requirements: "/tmp/requirements_{{ item }}.txt"
+        virtualenv: "{{ tower_venv_directory }}{{ item }}"
+        virtualenv_site_packages: yes
+      become: yes
+      with_items:
+        - "{{ venv_list }}"
+      environment:
+        ANSIBLE_SKIP_CONFLICT_CHECK: '1'
